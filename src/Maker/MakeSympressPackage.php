@@ -155,9 +155,7 @@ final class MakeSympressPackage extends AbstractMaker
         return Str::asClassName($name, 'Bundle');
     }
 
-    /**
-     * @return array<string, mixed>
-     */
+    /** @return array<string, mixed> */
     private function packageComposer(
         string $packageName,
         string $description,
@@ -180,7 +178,7 @@ final class MakeSympressPackage extends AbstractMaker
             'license'           => 'GPL-2.0-or-later',
             'require'           => $require,
             'require-dev'       => [
-                'phpunit/phpunit'          => '^11.5',
+                'phpunit/phpunit'           => '^11.5',
                 'sympress/coding-standards' => '*',
             ],
             'autoload'          => [
@@ -209,7 +207,7 @@ final class MakeSympressPackage extends AbstractMaker
                 'qa'     => ['@cs', '@tests'],
             ],
             'config'            => [
-                'sort-packages'      => true,
+                'sort-packages'       => true,
                 'optimize-autoloader' => true,
                 'allow-plugins'       => [
                     'dealerdirect/phpcodesniffer-composer-installer' => true,
@@ -340,7 +338,8 @@ use SymPress\Kernel\Bundle\AbstractBundle;
 final class %s extends AbstractBundle
 {
 }
-PHP,
+PHP
+            ,
             $namespace,
             Str::getShortClassName($bundleClass),
         ) . "\n";
@@ -371,7 +370,8 @@ if (!defined('ABSPATH')) {
 if (!class_exists(%s::class)) {
     require_once __DIR__ . '/vendor/autoload.php';
 }
-PHP,
+PHP
+            ,
             Str::asHumanWords($packageName),
             $description,
             $namespace,
@@ -398,7 +398,8 @@ if (!class_exists(App::class)) {
 if (!class_exists(App::class)) {
     return;
 }
-PHP,
+PHP
+            ,
             $namespace,
         ) . "\n";
     }
@@ -417,7 +418,8 @@ Version: 0.1.0
 License: GPL-2.0-or-later
 Text Domain: %s
 */
-CSS,
+CSS
+            ,
             Str::asHumanWords($name),
             $description,
             $name,

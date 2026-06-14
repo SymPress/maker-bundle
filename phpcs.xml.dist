@@ -2,13 +2,15 @@
 <ruleset name="SymPress Maker Bundle Coding Standard">
     <config name="testVersion" value="8.5-" />
     <arg name="colors" />
-    <arg value="sp" />
+    <arg name="warning-severity" value="0" />
 
-    <rule ref="SymPress-Plugin" />
+    <rule ref="SymPress-Pure">
+        <exclude name="SlevomatCodingStandard.Classes.ForbiddenPublicProperty" />
+        <exclude name="SlevomatCodingStandard.Functions.UnusedParameter" />
+        <exclude name="SymPress.Functions.FunctionLength" />
+    </rule>
 
     <file>src</file>
     <file>tests</file>
 
-    <exclude-pattern>*/vendor/*</exclude-pattern>
-    <exclude-pattern>*/var/*</exclude-pattern>
 </ruleset>

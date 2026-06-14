@@ -6,9 +6,7 @@ namespace SymPress\MakerBundle\Util;
 
 final class PackageServiceConfigurator
 {
-    /**
-     * @param list<array<string, mixed>> $tags
-     */
+    /** @param list<array<string, mixed>> $tags */
     public function hook(
         PackageContext $context,
         string $className,
@@ -36,9 +34,7 @@ final class PackageServiceConfigurator
         return $this->blockWithAssetLoaders($context, $className, $localizable, []);
     }
 
-    /**
-     * @param list<string> $assetLoaderClasses
-     */
+    /** @param list<string> $assetLoaderClasses */
     public function blockWithAssetLoaders(
         PackageContext $context,
         string $className,
@@ -141,9 +137,7 @@ final class PackageServiceConfigurator
         );
     }
 
-    /**
-     * @param list<array{class: string, yaml: list<string>, php: list<string>}> $definitions
-     */
+    /** @param list<array{class: string, yaml: list<string>, php: list<string>}> $definitions */
     private function services(PackageContext $context, array $definitions): ?FileUpdate
     {
         $file = $this->serviceFile($context);
@@ -211,9 +205,7 @@ services:
 YAML . "\n";
     }
 
-    /**
-     * @param list<string> $body
-     */
+    /** @param list<string> $body */
     private function appendYamlDefinition(string $contents, string $className, array $body): string
     {
         if (str_contains($contents, sprintf("\n    %s:", $className))) {
@@ -223,9 +215,7 @@ YAML . "\n";
         return rtrim($contents) . "\n\n    {$className}:\n" . implode("\n", $body) . "\n";
     }
 
-    /**
-     * @param list<string> $body
-     */
+    /** @param list<string> $body */
     private function appendPhpDefinition(string $contents, string $className, array $body): string
     {
         if (str_contains($contents, sprintf('\\%s::class', $className))) {
@@ -285,7 +275,7 @@ YAML . "\n";
      */
     private function phpSimpleTags(array $tags): array
     {
-        return array_map(fn (string $tag): string => sprintf('        ->tag(\'%s\')', $tag), $tags);
+        return array_map(static fn (string $tag): string => sprintf('        ->tag(\'%s\')', $tag), $tags);
     }
 
     /**

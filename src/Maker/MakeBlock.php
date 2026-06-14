@@ -170,9 +170,7 @@ final class MakeBlock extends AbstractMaker
         return sprintf('%s/%s', $vendor, $slug);
     }
 
-    /**
-     * @return array<string, mixed>
-     */
+    /** @return array<string, mixed> */
     private function blockMetadata(
         string $blockName,
         string $title,
@@ -263,7 +261,8 @@ registerBlockType('%s', {
     },
     save: () => null,
 });
-TS,
+TS
+            ,
             $blockName,
             $title,
             $textDomain,

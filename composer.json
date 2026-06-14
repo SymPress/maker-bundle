@@ -43,7 +43,7 @@
     "scripts": {
         "cs": [
             "Composer\\Config::disableProcessTimeout",
-            "phpcs --standard=phpcs.xml.dist"
+            "phpcs -s -p --standard=phpcs.xml.dist"
         ],
         "cs:fix": [
             "Composer\\Config::disableProcessTimeout",

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace SymPress\MakerBundle\Util;
 
 use SymPress\MakerBundle\Composer\PackageAutoloadResolver;
-use Symfony\Bundle\MakerBundle\Str;
 use Symfony\Bundle\MakerBundle\FileManager;
 use Symfony\Bundle\MakerBundle\Generator;
+use Symfony\Bundle\MakerBundle\Str;
 use Symfony\Bundle\MakerBundle\Util\ClassNameDetails;
 use Symfony\Bundle\MakerBundle\Util\ClassSource\Model\ClassData;
 use Symfony\Bundle\MakerBundle\Util\PhpCompatUtil;

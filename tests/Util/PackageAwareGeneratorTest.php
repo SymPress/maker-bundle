@@ -96,7 +96,8 @@ namespace <?= $class_data->getNamespace(); ?>;
 <?= $class_data->getClassDeclaration(); ?>
 {
 }
-PHP,
+PHP
+            ,
         );
 
         $classData = ClassData::create(

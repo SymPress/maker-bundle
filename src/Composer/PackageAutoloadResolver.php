@@ -136,9 +136,7 @@ final class PackageAutoloadResolver
 
         usort(
             $mappings,
-            static fn (PackageAutoloadMapping $left, PackageAutoloadMapping $right): int => (
-                strlen($right->namespacePrefix) <=> strlen($left->namespacePrefix)
-            ) ?: ($left->dev <=> $right->dev),
+            static fn (PackageAutoloadMapping $left, PackageAutoloadMapping $right): int => strlen($right->namespacePrefix) <=> strlen($left->namespacePrefix) ?: ($left->dev <=> $right->dev),
         );
 
         $this->mappings = $mappings;

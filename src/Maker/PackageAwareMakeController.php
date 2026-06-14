@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SymPress\MakerBundle\Maker;
 
+use PHPUnit\Framework\TestCase;
 use SymPress\MakerBundle\Util\PackageAwareClassDataFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -70,9 +71,11 @@ final class PackageAwareMakeController extends AbstractMaker
         $this->configureState($input);
         $this->generateTests = (bool) $input->getOption('with-tests');
 
-        if (!$this->generateTests) {
-            $this->generateTests = $io->confirm('Do you want to generate PHPUnit tests? [Experimental]', false);
+        if ($this->generateTests) {
+            return;
         }
+
+        $this->generateTests = $io->confirm('Do you want to generate PHPUnit tests? [Experimental]', false);
     }
 
     public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator): void
@@ -86,9 +89,9 @@ final class PackageAwareMakeController extends AbstractMaker
             $this->controllerClassData,
             'controller/Controller.tpl.php',
             [
-                'route_path' => Str::asRoutePath($this->relativeControllerName),
-                'route_name' => Str::asRouteName($this->relativeControllerName),
-                'method_name' => $this->isInvokable ? '__invoke' : 'index',
+                'route_path'    => Str::asRoutePath($this->relativeControllerName),
+                'route_name'    => Str::asRouteName($this->relativeControllerName),
+                'method_name'   => $this->isInvokable ? '__invoke' : 'index',
                 'with_template' => $this->usesTwigTemplate,
                 'template_name' => $this->twigTemplatePath,
             ],
@@ -101,8 +104,8 @@ final class PackageAwareMakeController extends AbstractMaker
                 'controller/twig_template.tpl.php',
                 [
                     'controller_path' => $controllerPath,
-                    'root_directory' => $generator->getRootDirectory(),
-                    'class_name' => $this->controllerClassData->getClassName(),
+                    'root_directory'  => $generator->getRootDirectory(),
+                    'class_name'      => $this->controllerClassData->getClassName(),
                 ],
             );
         }
@@ -122,7 +125,7 @@ final class PackageAwareMakeController extends AbstractMaker
                 ],
             );
 
-            if (!class_exists(\PHPUnit\Framework\TestCase::class)) {
+            if (!class_exists(TestCase::class)) {
                 $io->caution('You\'ll need to install the `symfony/test-pack` to execute the tests for your new controller.');
             }
         }
