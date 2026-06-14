@@ -1,0 +1,79 @@
+{
+    "name": "sympress/maker-bundle",
+    "description": "Package-aware Symfony MakerBundle integration for SymPress website workspaces.",
+    "type": "library",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Brian Schaffner",
+            "email": "brian.schaeffner@sympress.de",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.5",
+        "composer-runtime-api": "^2.1",
+        "symfony/maker-bundle": "^1.0",
+        "sympress/kernel": "dev-main",
+        "wp-cli/process": "^5.9.99"
+    },
+    "provide": {
+        "symfony/process": "8.1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.5",
+        "sympress/coding-standards": "dev-main"
+    },
+    "autoload": {
+        "psr-4": {
+            "SymPress\\MakerBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "SymPress\\MakerBundle\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "kernel": {
+            "bundle": "SymPress\\MakerBundle\\SymPressMakerBundle",
+            "entry": "maker-bundle"
+        }
+    },
+    "scripts": {
+        "cs": [
+            "Composer\\Config::disableProcessTimeout",
+            "phpcs --standard=phpcs.xml.dist"
+        ],
+        "cs:fix": [
+            "Composer\\Config::disableProcessTimeout",
+            "phpcbf --standard=phpcs.xml.dist"
+        ],
+        "tests": [
+            "Composer\\Config::disableProcessTimeout",
+            "phpunit --configuration phpunit.xml.dist --no-coverage"
+        ],
+        "qa": [
+            "@cs",
+            "@tests"
+        ]
+    },
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "./../*",
+            "options": {
+                "symlink": true
+            }
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
