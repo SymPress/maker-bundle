@@ -1,5 +1,7 @@
 # SymPress Maker Bundle
 
+[![Checks](https://img.shields.io/github/actions/workflow/status/SymPress/maker-bundle/qa.yml?branch=main&label=checks)](https://github.com/SymPress/maker-bundle/actions/workflows/qa.yml) [![Release](https://img.shields.io/packagist/v/sympress/maker-bundle.svg?label=release)](https://packagist.org/packages/sympress/maker-bundle) [![PHP](https://img.shields.io/packagist/dependency-v/sympress/maker-bundle/php.svg?label=php)](https://packagist.org/packages/sympress/maker-bundle) [![Downloads](https://img.shields.io/packagist/dt/sympress/maker-bundle.svg?label=downloads)](https://packagist.org/packages/sympress/maker-bundle/stats) [![License: GPL-2.0-or-later](https://img.shields.io/badge/license-GPL--2.0--or--later-blue.svg)](LICENSE) [![Security Policy](https://img.shields.io/badge/security-policy-2ea44f.svg)](SECURITY.md)
+
 Package-aware integration for `symfony/maker-bundle` in SymPress website workspaces.
 
 ## Installation
