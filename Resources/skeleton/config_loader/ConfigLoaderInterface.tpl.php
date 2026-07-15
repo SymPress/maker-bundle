@@ -7,6 +7,7 @@ namespace <?= $namespace; ?>;
 use SymPress\Assets\Asset;
 
 interface <?= $class_name; ?>
+
 {
     public function accepts(Asset $asset): bool;
 

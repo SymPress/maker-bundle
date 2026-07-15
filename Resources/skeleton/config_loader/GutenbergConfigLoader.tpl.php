@@ -9,6 +9,7 @@ use SymPress\Assets\Script;
 use SymPress\WordPress\Contracts\Gutenberg\LocalizableBlockInterface;
 
 final class <?= $class_name; ?> implements ConfigLoaderInterface
+
 {
     public const EDITOR = '<?= $editor_handle; ?>';
 

@@ -11,6 +11,7 @@ use SymPress\WordPress\Contracts\Gutenberg\BlockInterface;
 <?php } ?>
 
 final class <?= $class_name; ?> implements <?= $localizable ? 'LocalizableBlockInterface' : 'BlockInterface'; ?>
+
 {
 <?php if ($localizable) { ?>
     public const JS_CONFIG_VAR = '<?= $js_config_var; ?>';

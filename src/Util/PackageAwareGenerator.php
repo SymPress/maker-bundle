@@ -27,6 +27,7 @@ final class PackageAwareGenerator extends Generator
         parent::__construct($fileManager, $namespacePrefix, $phpCompatUtil, $templateComponentGenerator);
     }
 
+    /** @param array<string, mixed> $variables */
     public function generateClass(string $className, string $templateName, array $variables = []): string
     {
         if (isset($variables['class_data']) && $variables['class_data'] instanceof ClassData) {

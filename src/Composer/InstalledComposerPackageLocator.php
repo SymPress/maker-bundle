@@ -72,10 +72,6 @@ final readonly class InstalledComposerPackageLocator implements ComposerPackageL
         sort($packageFiles);
 
         foreach ($packageFiles as $composerFile) {
-            if (!is_string($composerFile)) {
-                continue;
-            }
-
             $metadata = $this->composerMetadata($composerFile);
             $packageName = (string) ($metadata['name'] ?? '');
 

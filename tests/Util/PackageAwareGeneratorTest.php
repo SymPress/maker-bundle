@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SymPress\MakerBundle\Tests\Util;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use SymPress\MakerBundle\Composer\PackageAutoloadResolver;
 use SymPress\MakerBundle\Tests\Fixtures\ArrayComposerPackageLocator;
@@ -119,6 +120,131 @@ PHP
             'namespace Site\\Plugin\\Controller;',
             file_get_contents($this->workspace . '/' . $path),
         );
+    }
+
+    public function testHookSkeletonGeneratesExpectedPackageClass(): void
+    {
+        $generator = $this->generator();
+        $path = $generator->generateClass(
+            'Site\\Plugin\\Hook\\PublishHook',
+            __DIR__ . '/../../Resources/skeleton/hook/Hook.tpl.php',
+            [
+                'method_name' => 'register',
+                'type'        => 'action',
+            ],
+        );
+        $generator->writeChanges();
+
+        self::assertSame('packages/plugin/src/Hook/PublishHook.php', $path);
+        self::assertSame(
+            <<<'PHP'
+<?php
+
+declare(strict_types=1);
+
+namespace Site\Plugin\Hook;
+
+final class PublishHook
+{
+    public function register(): void
+    {
+    }
+}
+PHP . "\n",
+            file_get_contents($this->workspace . '/' . $path),
+        );
+    }
+
+    /** @param array<string, mixed> $variables */
+    #[DataProvider('localSkeletonContracts')]
+    public function testLocalSkeletonGeneratesStablePackageClass(
+        string $className,
+        string $skeleton,
+        array $variables,
+        string $expectedPath,
+        string $expectedHash,
+    ): void {
+
+        $generator = $this->generator();
+        $path = $generator->generateClass(
+            $className,
+            __DIR__ . '/../../Resources/skeleton/' . $skeleton,
+            $variables,
+        );
+        $generator->writeChanges();
+
+        self::assertSame($expectedPath, $path);
+        self::assertSame(
+            $expectedHash,
+            hash_file('sha256', $this->workspace . '/' . $path),
+        );
+    }
+
+    /** @return iterable<string, array{string, string, array<string, mixed>, string, string}> */
+    public static function localSkeletonContracts(): iterable
+    {
+        yield 'data provider' => [
+            'Site\\Plugin\\DataProvider\\DashboardDataProvider',
+            'data_provider/DataProvider.tpl.php',
+            ['method_name' => 'provide'],
+            'packages/plugin/src/DataProvider/DashboardDataProvider.php',
+            'd910db0e725e8aa8543b2967a68534bc00260ab38ce5d9b07b390480edd71199',
+        ];
+        yield 'config loader interface' => [
+            'Site\\Plugin\\ConfigLoader\\ConfigLoaderInterface',
+            'config_loader/ConfigLoaderInterface.tpl.php',
+            [],
+            'packages/plugin/src/ConfigLoader/ConfigLoaderInterface.php',
+            '391ede28c3d171c8a3147fb70258be857e6bde27c016c9236af88d9ba30490e2',
+        ];
+        yield 'frontend config loader' => [
+            'Site\\Plugin\\ConfigLoader\\FrontendConfigLoader',
+            'config_loader/FrontendConfigLoader.tpl.php',
+            ['frontend_handle' => 'site-plugin'],
+            'packages/plugin/src/ConfigLoader/FrontendConfigLoader.php',
+            '120aa77321e429423f2697388a64bdb184b2c23b2d8b4094636c3bdf2f69b0d8',
+        ];
+        yield 'Gutenberg config loader' => [
+            'Site\\Plugin\\ConfigLoader\\GutenbergConfigLoader',
+            'config_loader/GutenbergConfigLoader.tpl.php',
+            [
+                'editor_handle' => 'site-plugin-editor',
+                'localize_var'  => 'sitePlugin',
+            ],
+            'packages/plugin/src/ConfigLoader/GutenbergConfigLoader.php',
+            '7ba1186c9f62ef472262ccdfe7bcb5c14114f43eb832eb19b300ab92dcf2e719',
+        ];
+        yield 'asset config loader' => [
+            'Site\\Plugin\\ConfigLoader\\AdminConfigLoader',
+            'asset_entry/AssetConfigLoader.tpl.php',
+            [
+                'asset_handle'   => 'site-plugin-admin',
+                'asset_location' => 'Asset::BACKEND',
+            ],
+            'packages/plugin/src/ConfigLoader/AdminConfigLoader.php',
+            '136b3b67123bc28516be76e2c714ae6e0db33114e1e0fc83a1ff4a9004bd6252',
+        ];
+        yield 'block' => [
+            'Site\\Plugin\\Block\\HeroBlock',
+            'block/Block.tpl.php',
+            [
+                'block_name'      => 'site/hero',
+                'title'           => 'Hero',
+                'description'     => 'Hero block.',
+                'category'        => 'design',
+                'icon'            => 'cover-image',
+                'text_domain'     => 'site-plugin',
+                'editor_handle'   => 'site-plugin-hero-editor',
+                'frontend_handle' => 'site-plugin-hero',
+                'localizable'     => true,
+                'js_config_var'   => 'heroBlock',
+                'with_frontend'   => true,
+                'with_view'       => true,
+                'view_path'       => '../../Resources/views/block/hero.php',
+            ],
+            'packages/plugin/src/Block/HeroBlock.php',
+            '12c86062e6ecf7eee3ce0d6be96d446f39eb7790cc2cf94ce23bbed3077b290b',
+        ];
     }
 
     private function generator(): PackageAwareGenerator

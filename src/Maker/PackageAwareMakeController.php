@@ -85,8 +85,14 @@ final class PackageAwareMakeController extends AbstractMaker
             $this->generateTests = (bool) $input->getOption('with-tests');
         }
 
+        $controllerClassData = $this->controllerClassData;
+
+        if (!$controllerClassData instanceof ClassData) {
+            throw new \LogicException('Controller class data was not initialized.');
+        }
+
         $controllerPath = $generator->generateClassFromClassData(
-            $this->controllerClassData,
+            $controllerClassData,
             'controller/Controller.tpl.php',
             [
                 'route_path'    => Str::asRoutePath($this->relativeControllerName),
@@ -105,7 +111,7 @@ final class PackageAwareMakeController extends AbstractMaker
                 [
                     'controller_path' => $controllerPath,
                     'root_directory'  => $generator->getRootDirectory(),
-                    'class_name'      => $this->controllerClassData->getClassName(),
+                    'class_name'      => $controllerClassData->getClassName(),
                 ],
             );
         }

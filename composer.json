@@ -21,6 +21,8 @@
         "symfony/process": "8.1.0"
     },
     "require-dev": {
+        "symfony/security-core": "^8.1",
+        "symfony/validator": "^8.1",
         "sympress/qa": "dev-main"
     },
     "autoload": {

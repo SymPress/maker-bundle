@@ -7,6 +7,7 @@ namespace <?= $namespace; ?>;
 use SymPress\Assets\Asset;
 
 final class <?= $class_name; ?> implements ConfigLoaderInterface
+
 {
     public const FRONTEND = '<?= $frontend_handle; ?>';
 
