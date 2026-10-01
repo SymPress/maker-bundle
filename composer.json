@@ -14,13 +14,13 @@
         "php": "^8.5",
         "composer-runtime-api": "^2.1",
         "symfony/maker-bundle": "^1.68",
-        "sympress/kernel": "dev-main",
+        "sympress/kernel": "^1.1.1",
         "symfony/process": "^8.1"
     },
     "require-dev": {
         "symfony/security-core": "^8.1",
         "symfony/validator": "^8.1",
-        "sympress/qa": "dev-main"
+        "sympress/qa": "^0.1.2"
     },
     "autoload": {
         "psr-4": {
@@ -81,6 +81,6 @@
             }
         }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true
 }
