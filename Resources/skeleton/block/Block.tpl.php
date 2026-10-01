@@ -14,12 +14,12 @@ final class <?= $class_name; ?> implements <?= $localizable ? 'LocalizableBlockI
 
 {
 <?php if ($localizable) { ?>
-    public const JS_CONFIG_VAR = '<?= $js_config_var; ?>';
+    public const JS_CONFIG_VAR = <?= var_export($js_config_var, true); ?>;
 
 <?php } ?>
     public function name(): string
     {
-        return '<?= $block_name; ?>';
+        return <?= var_export($block_name, true); ?>;
     }
 
     /**
@@ -29,17 +29,17 @@ final class <?= $class_name; ?> implements <?= $localizable ? 'LocalizableBlockI
     {
         return [
             'api_version' => 2,
-            'title' => __('<?= $title; ?>', '<?= $text_domain; ?>'),
-            'description' => __('<?= $description; ?>', '<?= $text_domain; ?>'),
-            'category' => '<?= $category; ?>',
-            'icon' => '<?= $icon; ?>',
+            'title' => __(<?= var_export($title, true); ?>, <?= var_export($text_domain, true); ?>),
+            'description' => __(<?= var_export($description, true); ?>, <?= var_export($text_domain, true); ?>),
+            'category' => <?= var_export($category, true); ?>,
+            'icon' => <?= var_export($icon, true); ?>,
             'supports' => [
                 'html' => false,
             ],
             'attributes' => [],
-            'editor_script' => '<?= $editor_handle; ?>',
+            'editor_script' => <?= var_export($editor_handle, true); ?>,
 <?php if ($with_frontend) { ?>
-            'script' => '<?= $frontend_handle; ?>',
+            'script' => <?= var_export($frontend_handle, true); ?>,
 <?php } ?>
             'render_callback' => [$this, 'render'],
         ];
@@ -61,7 +61,7 @@ final class <?= $class_name; ?> implements <?= $localizable ? 'LocalizableBlockI
     public function render(array $attributes): string
     {
 <?php if ($with_view) { ?>
-        $template = __DIR__ . '/<?= $view_path; ?>';
+        $template = __DIR__ . <?= var_export('/' . $view_path, true); ?>;
 
         if (!is_file($template)) {
             return '';
@@ -73,7 +73,7 @@ final class <?= $class_name; ?> implements <?= $localizable ? 'LocalizableBlockI
 
         return (string) ob_get_clean();
 <?php } else { ?>
-        return '<div data-block="<?= $block_name; ?>"></div>';
+        return <?= var_export('<div data-block="' . htmlspecialchars($block_name, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '"></div>', true); ?>;
 <?php } ?>
     }
 }

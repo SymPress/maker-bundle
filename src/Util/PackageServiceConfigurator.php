@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SymPress\MakerBundle\Util;
 
+use Symfony\Component\Yaml\Yaml;
+
 final class PackageServiceConfigurator
 {
     /** @param list<array<string, mixed>> $tags */
@@ -245,7 +247,7 @@ YAML . "\n";
     private function yamlSimpleTags(array $tags): array
     {
         if (count($tags) === 1) {
-            return [sprintf('        tags: [\'%s\']', $this->yamlQuote($tags[0]))];
+            return [sprintf('        tags: [%s]', $this->yamlQuote($tags[0]))];
         }
 
         return [
@@ -275,7 +277,7 @@ YAML . "\n";
      */
     private function phpSimpleTags(array $tags): array
     {
-        return array_map(static fn (string $tag): string => sprintf('        ->tag(\'%s\')', $tag), $tags);
+        return array_map(static fn (string $tag): string => sprintf('        ->tag(%s)', var_export($tag, true)), $tags);
     }
 
     /**
@@ -285,7 +287,7 @@ YAML . "\n";
     private function phpTags(array $tags): array
     {
         return array_map(
-            fn (array $tag): string => sprintf('        ->tag(\'%s\', %s)', $tag['name'], $this->phpArray($tag)),
+            fn (array $tag): string => sprintf('        ->tag(%s, %s)', var_export($tag['name'], true), $this->phpArray($tag)),
             $tags,
         );
     }
@@ -312,7 +314,7 @@ YAML . "\n";
             $parts[] = sprintf(
                 '\'%s\' => %s',
                 $key,
-                is_int($value) ? (string) $value : sprintf('\'%s\'', str_replace('\'', '\\\'', (string) $value)),
+                is_int($value) ? (string) $value : var_export((string) $value, true),
             );
         }
 
@@ -321,6 +323,6 @@ YAML . "\n";
 
     private function yamlQuote(string $value): string
     {
-        return '\'' . str_replace('\'', '\'\'', $value) . '\'';
+        return Yaml::dump($value);
     }
 }
