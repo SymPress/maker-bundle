@@ -6,6 +6,7 @@ namespace SymPress\MakerBundle\Maker;
 
 use SymPress\MakerBundle\Util\PackageContextResolver;
 use SymPress\MakerBundle\Util\PackageServiceConfigurator;
+use SymPress\MakerBundle\Util\SourceLiteral;
 use Symfony\Bundle\MakerBundle\ConsoleStyle;
 use Symfony\Bundle\MakerBundle\DependencyBuilder;
 use Symfony\Bundle\MakerBundle\Generator;
@@ -55,6 +56,7 @@ final class MakeHook extends AbstractMaker
         }
 
         $method = (string) $input->getOption('method');
+        SourceLiteral::identifier($method);
         $classDetails = $generator->createClassNameDetails((string) $input->getArgument('class'), 'Hook\\');
         $generator->generateClass(
             $classDetails->getFullName(),

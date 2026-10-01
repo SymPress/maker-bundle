@@ -9,7 +9,7 @@ use SymPress\Assets\Asset;
 final class <?= $class_name; ?> implements ConfigLoaderInterface
 
 {
-    public const FRONTEND = '<?= $frontend_handle; ?>';
+    public const FRONTEND = <?= var_export($frontend_handle, true); ?>;
 
     public function accepts(Asset $asset): bool
     {

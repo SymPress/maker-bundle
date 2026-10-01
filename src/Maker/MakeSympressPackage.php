@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace SymPress\MakerBundle\Maker;
 
 use SymPress\MakerBundle\Util\JsonFile;
+use SymPress\MakerBundle\Util\ProjectPath;
+use SymPress\MakerBundle\Util\SourceLiteral;
 use Symfony\Bundle\MakerBundle\ConsoleStyle;
 use Symfony\Bundle\MakerBundle\DependencyBuilder;
 use Symfony\Bundle\MakerBundle\Generator;
@@ -73,6 +75,7 @@ final class MakeSympressPackage extends AbstractMaker
         $packageType = $this->normalizePackageType((string) $input->getOption('type'));
         $packageDirectory = $this->packageDirectory($packageName);
         $packagePath = (string) ($input->getOption('path') ?: sprintf('packages/%s', $packageDirectory));
+        $packagePath = ProjectPath::relative($this->projectDir, $packagePath);
         $absolutePackagePath = sprintf('%s/%s', rtrim($this->projectDir, '/'), trim($packagePath, '/'));
 
         if (is_dir($absolutePackagePath)) {
@@ -80,6 +83,9 @@ final class MakeSympressPackage extends AbstractMaker
         }
 
         $namespace = trim((string) ($input->getOption('namespace') ?: $this->namespace($packageName)), '\\');
+        foreach (explode('\\', $namespace) as $segment) {
+            SourceLiteral::identifier($segment);
+        }
         $bundleClass = $this->isKernelPackage($packageType)
             ? sprintf('%s\\%s', $namespace, $this->bundleClassName($packageName))
             : null;
@@ -117,6 +123,7 @@ final class MakeSympressPackage extends AbstractMaker
             $generator->dumpFile('composer.json', $this->rootComposerWithPackage($packageName, (bool) $input->getOption('dev')));
         }
 
+        ProjectPath::relative($this->projectDir, $packagePath);
         $generator->writeChanges();
         $this->writeSuccessMessage($io);
         $io->text(sprintf('Package "%s" (%s) was created at %s.', $packageName, $packageType, $packagePath));
@@ -373,7 +380,7 @@ if (!class_exists(%s::class)) {
 PHP
             ,
             Str::asHumanWords($packageName),
-            $description,
+            str_replace(['*/', "\r", "\n"], ['* /', ' ', ' '], $description),
             $namespace,
             Str::getShortClassName($bundleClass),
         ) . "\n";
@@ -421,7 +428,7 @@ Text Domain: %s
 CSS
             ,
             Str::asHumanWords($name),
-            $description,
+            str_replace(['*/', "\r", "\n"], ['* /', ' ', ' '], $description),
             $name,
         ) . "\n";
     }

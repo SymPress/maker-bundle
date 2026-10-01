@@ -8,6 +8,7 @@ use SymPress\MakerBundle\Util\JsonFile;
 use SymPress\MakerBundle\Util\PackageContext;
 use SymPress\MakerBundle\Util\PackageContextResolver;
 use SymPress\MakerBundle\Util\PackageServiceConfigurator;
+use SymPress\MakerBundle\Util\SourceLiteral;
 use SymPress\MakerBundle\Util\WebpackEncoreEntryConfigurator;
 use Symfony\Bundle\MakerBundle\ConsoleStyle;
 use Symfony\Bundle\MakerBundle\DependencyBuilder;
@@ -137,7 +138,7 @@ final class MakeBlock extends AbstractMaker
         if ($withView) {
             $generator->dumpFile(
                 $context->packageRelativePath(sprintf('Resources/views/block/%s.php', $slug)),
-                "<div data-block=\"{$blockName}\"></div>\n",
+                '<div data-block="' . htmlspecialchars($blockName, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '"></div>' . "\n",
             );
         }
 
@@ -248,14 +249,14 @@ import { useBlockProps } from '@wordpress/block-editor';
 import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
 
-registerBlockType('%s', {
-    title: __('%s', '%s'),
+registerBlockType(%s, {
+    title: __(%s, %s),
     edit: () => {
         const blockProps = useBlockProps();
 
         return (
             <div {...blockProps}>
-                <strong>{__('%s', '%s')}</strong>
+                <strong>{__(%s, %s)}</strong>
             </div>
         );
     },
@@ -263,16 +264,17 @@ registerBlockType('%s', {
 });
 TS
             ,
-            $blockName,
-            $title,
-            $textDomain,
-            $title,
-            $textDomain,
+            SourceLiteral::javascript($blockName),
+            SourceLiteral::javascript($title),
+            SourceLiteral::javascript($textDomain),
+            SourceLiteral::javascript($title),
+            SourceLiteral::javascript($textDomain),
         ) . "\n";
     }
 
     private function frontendSource(string $blockName): string
     {
-        return sprintf("document.querySelectorAll('[data-block=\"%s\"]');\n", $blockName);
+        return "Array.from(document.querySelectorAll('[data-block]')).filter(element => element.getAttribute('data-block') === "
+            . SourceLiteral::javascript($blockName) . ");\n";
     }
 }

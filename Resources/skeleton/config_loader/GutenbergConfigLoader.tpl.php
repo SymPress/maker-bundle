@@ -11,7 +11,7 @@ use SymPress\WordPress\Contracts\Gutenberg\LocalizableBlockInterface;
 final class <?= $class_name; ?> implements ConfigLoaderInterface
 
 {
-    public const EDITOR = '<?= $editor_handle; ?>';
+    public const EDITOR = <?= var_export($editor_handle, true); ?>;
 
     /** @var list<LocalizableBlockInterface> */
     private array $blocks = [];
@@ -45,7 +45,7 @@ final class <?= $class_name; ?> implements ConfigLoaderInterface
 
         if ($asset instanceof Script) {
             $asset
-                ->withLocalize('<?= $localize_var; ?>', $localization)
+                ->withLocalize(<?= var_export($localize_var, true); ?>, $localization)
                 ->withDependencies('wp-blocks');
         }
 

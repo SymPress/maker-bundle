@@ -13,12 +13,9 @@
     "require": {
         "php": "^8.5",
         "composer-runtime-api": "^2.1",
-        "symfony/maker-bundle": "^1.0",
+        "symfony/maker-bundle": "^1.68",
         "sympress/kernel": "dev-main",
-        "wp-cli/process": "^5.9.99"
-    },
-    "provide": {
-        "symfony/process": "8.1.0"
+        "symfony/process": "^8.1"
     },
     "require-dev": {
         "symfony/security-core": "^8.1",

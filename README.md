@@ -71,3 +71,19 @@ repository.
 ## License
 
 This package is licensed under `GPL-2.0-or-later`.
+
+## Generated literals, output paths, and Process
+
+PHP skeleton values use exported literals; JavaScript/TSX values use JSON-based
+quoting with escaped HTML delimiters and Unicode separators. Identifiers are
+validated separately, and generated frontend code compares data-block attribute
+values without interpolating user text into a CSS selector. Root project packages
+and nested packages both generate relative output paths. MakePackage --path must
+be relative and remain inside the canonical project, including nonexistent children
+of symlinks; traversal and absolute paths are rejected and checked again before
+writing. Project/cache parents must remain trusted while generation runs.
+
+This bundle declares the real symfony/process ^8.1 dependency and integrates with
+symfony/maker-bundle ^1.68. It no longer provides a fictitious Symfony Process
+version through wp-cli/process. Generated PHP, webpack JavaScript and TSX/TS must
+be syntax checked alongside existing fixture contracts before release.

@@ -47,20 +47,23 @@ final readonly class PackageContext
         $path = str_replace('\\', '/', $path);
         $projectDir = rtrim(str_replace('\\', '/', $this->projectDir), '/');
 
+        if ($path === $projectDir) {
+            return '';
+        }
         if (str_starts_with($path, $projectDir . '/')) {
             return substr($path, strlen($projectDir) + 1);
         }
 
-        return ltrim($path, '/');
+        return ProjectPath::relative($this->projectDir, $path);
     }
 
     public function packageRelativePath(string $path): string
     {
-        return sprintf(
+        return ltrim(sprintf(
             '%s/%s',
             $this->relativePath($this->packagePath),
             ltrim(str_replace('\\', '/', $path), '/'),
-        );
+        ), '/');
     }
 
     public function tagPrefix(): string

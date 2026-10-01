@@ -29,7 +29,7 @@ final class WebpackEncoreEntryConfigurator
             return null;
         }
 
-        $line = sprintf("    .%s('%s', '%s')", $method, $handle, $sourcePath);
+        $line = sprintf('    .%s(%s, %s)', $method, SourceLiteral::javascript($handle), SourceLiteral::javascript($sourcePath));
         $updated = $this->insertEntry($contents, $line);
 
         return new FileUpdate($context->relativePath($file), $updated);
