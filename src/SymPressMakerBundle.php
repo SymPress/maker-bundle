@@ -17,6 +17,7 @@ use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\DependencyInjection\Reference;
 
 final class SymPressMakerBundle extends AbstractBundle
 {
@@ -50,6 +51,9 @@ final class SymPressMakerBundle extends AbstractBundle
         $configurator->import(sprintf('%s/config/services.php', $makerBundlePath));
         $configurator->import(sprintf('%s/config/makers.php', $makerBundlePath));
         $configurator->import('../Resources/config/services.php');
+
+        // Keep the complete constructor positional when Symfony rebuilds debug/lint definitions.
+        $container->getDefinition('maker.maker.make_command')->setArguments([null, new Reference('maker.file_manager')]);
 
         $rootNamespace = $this->rootNamespace($config, $container);
         $entityNamespace = $this->entityNamespace($config, $rootNamespace);
