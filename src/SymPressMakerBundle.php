@@ -8,6 +8,7 @@ use SymPress\Kernel\Bundle\AbstractBundle;
 use SymPress\MakerBundle\Composer\InstalledComposerPackageLocator;
 use SymPress\MakerBundle\Composer\PackageAutoloadResolver;
 use Symfony\Bundle\MakerBundle\DependencyInjection\CompilerPass\MakeCommandRegistrationPass;
+use Symfony\Bundle\MakerBundle\DependencyInjection\CompilerPass\MakeDecoratorPass;
 use Symfony\Bundle\MakerBundle\DependencyInjection\CompilerPass\RemoveMissingParametersPass;
 use Symfony\Bundle\MakerBundle\DependencyInjection\CompilerPass\SetDoctrineAnnotatedPrefixesPass;
 use Symfony\Bundle\MakerBundle\MakerBundle;
@@ -83,6 +84,7 @@ final class SymPressMakerBundle extends AbstractBundle
             ->addTag(MakeCommandRegistrationPass::MAKER_TAG);
 
         $container->addCompilerPass(new MakeCommandRegistrationPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 10);
+        $container->addCompilerPass(new MakeDecoratorPass());
         $container->addCompilerPass(new RemoveMissingParametersPass());
         $container->addCompilerPass(new SetDoctrineAnnotatedPrefixesPass());
     }
