@@ -9,3 +9,7 @@ where applicable.
 ## Unreleased
 
 - Initial Maker Bundle package implementation, documentation, and QA workflow.
+
+## 1.0.3 — 2026-11-06
+
+- Use the Symfony 8.1.11 security patches released on November 4.
