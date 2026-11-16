@@ -59,11 +59,11 @@ final readonly class PackageContext
 
     public function packageRelativePath(string $path): string
     {
-        return ltrim(sprintf(
+        return ProjectPath::relative($this->projectDir, ltrim(sprintf(
             '%s/%s',
             $this->relativePath($this->packagePath),
             ltrim(str_replace('\\', '/', $path), '/'),
-        ), '/');
+        ), '/'));
     }
 
     public function tagPrefix(): string
