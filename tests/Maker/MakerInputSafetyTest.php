@@ -6,12 +6,14 @@ namespace SymPress\MakerBundle\Tests\Maker;
 
 use PHPUnit\Framework\TestCase;
 use SymPress\MakerBundle\Composer\PackageAutoloadResolver;
+use SymPress\MakerBundle\Maker\MakeAssetEntry;
 use SymPress\MakerBundle\Maker\MakeDataProvider;
 use SymPress\MakerBundle\Tests\Fixtures\ArrayComposerPackageLocator;
 use SymPress\MakerBundle\Util\PackageAwareAutoloaderUtil;
 use SymPress\MakerBundle\Util\PackageAwareGenerator;
 use SymPress\MakerBundle\Util\PackageContextResolver;
 use SymPress\MakerBundle\Util\PackageServiceConfigurator;
+use SymPress\MakerBundle\Util\WebpackEncoreEntryConfigurator;
 use Symfony\Bundle\MakerBundle\ConsoleStyle;
 use Symfony\Bundle\MakerBundle\FileManager;
 use Symfony\Bundle\MakerBundle\InputConfiguration;
@@ -70,6 +72,24 @@ final class MakerInputSafetyTest extends TestCase
         }
     }
 
+    public function testAssetEntryRejectsSourcePathOutsideThePackage(): void
+    {
+        mkdir($this->workspace . '/packages/plugin/Resources');
+
+        try {
+            $this->make($this->assetEntryMaker(), [
+                'package'     => 'site/plugin',
+                'name'        => 'frontend',
+                '--path'      => 'Resources/../../../escape.ts',
+                '--no-loader' => true,
+            ]);
+            self::fail('Traversal path accepted.');
+        } catch (\InvalidArgumentException) {
+            self::assertFileDoesNotExist($this->workspace . '/escape.ts');
+            self::assertFileDoesNotExist($this->workspace . '/packages/plugin/webpack.config.js');
+        }
+    }
+
     /** @param array<string, mixed> $arguments */
     private function make(AbstractMaker $maker, array $arguments): void
     {
@@ -77,6 +97,15 @@ final class MakerInputSafetyTest extends TestCase
         $maker->configureCommand($command, new InputConfiguration());
         $input = new ArrayInput($arguments, $command->getDefinition());
         $maker->generate($input, new ConsoleStyle($input, new BufferedOutput()), $this->generator());
+    }
+
+    private function assetEntryMaker(): MakeAssetEntry
+    {
+        return new MakeAssetEntry(
+            $this->contextResolver,
+            new PackageServiceConfigurator(),
+            new WebpackEncoreEntryConfigurator(),
+        );
     }
 
     private function generator(): PackageAwareGenerator
