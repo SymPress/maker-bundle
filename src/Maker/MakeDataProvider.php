@@ -6,6 +6,7 @@ namespace SymPress\MakerBundle\Maker;
 
 use SymPress\MakerBundle\Util\PackageContextResolver;
 use SymPress\MakerBundle\Util\PackageServiceConfigurator;
+use SymPress\MakerBundle\Util\SourceLiteral;
 use Symfony\Bundle\MakerBundle\ConsoleStyle;
 use Symfony\Bundle\MakerBundle\DependencyBuilder;
 use Symfony\Bundle\MakerBundle\Generator;
@@ -44,6 +45,8 @@ final class MakeDataProvider extends AbstractMaker
 
     public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator): void
     {
+        $method = (string) $input->getOption('method');
+        SourceLiteral::identifier($method);
         $classDetails = $generator->createClassNameDetails(
             (string) $input->getArgument('class'),
             'DataProvider\\Templating\\',
@@ -54,7 +57,7 @@ final class MakeDataProvider extends AbstractMaker
             $classDetails->getFullName(),
             __DIR__ . '/../../Resources/skeleton/data_provider/DataProvider.tpl.php',
             [
-                'method_name' => (string) $input->getOption('method'),
+                'method_name' => $method,
             ],
         );
 
