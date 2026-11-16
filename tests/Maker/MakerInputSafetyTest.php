@@ -7,8 +7,10 @@ namespace SymPress\MakerBundle\Tests\Maker;
 use PHPUnit\Framework\TestCase;
 use SymPress\MakerBundle\Composer\PackageAutoloadResolver;
 use SymPress\MakerBundle\Maker\MakeAssetEntry;
+use SymPress\MakerBundle\Maker\MakeBlock;
 use SymPress\MakerBundle\Maker\MakeDataProvider;
 use SymPress\MakerBundle\Tests\Fixtures\ArrayComposerPackageLocator;
+use SymPress\MakerBundle\Util\JsonFile;
 use SymPress\MakerBundle\Util\PackageAwareAutoloaderUtil;
 use SymPress\MakerBundle\Util\PackageAwareGenerator;
 use SymPress\MakerBundle\Util\PackageContextResolver;
@@ -105,6 +107,37 @@ final class MakerInputSafetyTest extends TestCase
                 self::assertDirectoryDoesNotExist($this->workspace . '/packages/plugin/Resources');
             }
         }
+    }
+
+    public function testBlockRefusesToOverwriteExistingBlockAssets(): void
+    {
+        $blockJson = $this->workspace . '/packages/plugin/Resources/block/hero/block.json';
+        mkdir(dirname($blockJson), 0777, true);
+        file_put_contents($blockJson, '{"name":"site/maintained"}');
+        $maker = new MakeBlock(
+            $this->contextResolver,
+            new PackageServiceConfigurator(),
+            new WebpackEncoreEntryConfigurator(),
+            new JsonFile(),
+        );
+
+        $arguments = ['class' => 'Site\\Plugin\\Block\\HeroBlock', '--no-service' => true, '--with-view' => true];
+
+        try {
+            $this->make($maker, $arguments);
+            $error = null;
+        } catch (\RuntimeException $exception) {
+            $error = $exception->getMessage();
+        }
+
+        self::assertStringContainsString('already exists', (string) $error);
+        self::assertSame('{"name":"site/maintained"}', file_get_contents($blockJson));
+        self::assertFileDoesNotExist($this->workspace . '/packages/plugin/src/Block/HeroBlock.php');
+
+        unlink($blockJson);
+        $this->make($maker, $arguments);
+        self::assertFileExists($blockJson);
+        self::assertFileExists($this->workspace . '/packages/plugin/Resources/views/block/hero.php');
     }
 
     /** @param array<string, mixed> $arguments */

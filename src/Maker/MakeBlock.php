@@ -93,7 +93,9 @@ final class MakeBlock extends AbstractMaker
                 'view_path'       => sprintf('../../Resources/views/block/%s.php', $slug),
             ],
         );
-        $generator->dumpFile(
+        $this->dumpNewFile(
+            $generator,
+            $context,
             $context->packageRelativePath(sprintf('Resources/block/%s/block.json', $slug)),
             $this->jsonFile->encode($this->blockMetadata(
                 $blockName,
@@ -105,7 +107,9 @@ final class MakeBlock extends AbstractMaker
                 $withFrontend ? $frontendHandle : null,
             )),
         );
-        $generator->dumpFile(
+        $this->dumpNewFile(
+            $generator,
+            $context,
             $context->packageRelativePath(ltrim($editorSource, './')),
             $this->editorSource($blockName, $title, $context->textDomain()),
         );
@@ -121,7 +125,9 @@ final class MakeBlock extends AbstractMaker
         ];
 
         if ($withFrontend) {
-            $generator->dumpFile(
+            $this->dumpNewFile(
+                $generator,
+                $context,
                 $context->packageRelativePath(ltrim($frontendSource, './')),
                 $this->frontendSource($blockName),
             );
@@ -136,7 +142,9 @@ final class MakeBlock extends AbstractMaker
         }
 
         if ($withView) {
-            $generator->dumpFile(
+            $this->dumpNewFile(
+                $generator,
+                $context,
                 $context->packageRelativePath(sprintf('Resources/views/block/%s.php', $slug)),
                 '<div data-block="' . htmlspecialchars($blockName, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '"></div>' . "\n",
             );
@@ -201,6 +209,15 @@ final class MakeBlock extends AbstractMaker
         }
 
         return $metadata;
+    }
+
+    private function dumpNewFile(Generator $generator, PackageContext $context, string $path, string $contents): void
+    {
+        if (file_exists(sprintf('%s/%s', $context->projectDir, $path))) {
+            throw new \RuntimeException(sprintf('The file "%s" can\'t be generated because it already exists.', $path));
+        }
+
+        $generator->dumpFile($path, $contents);
     }
 
     private function ensureConfigLoaderInterface(PackageContext $context, Generator $generator): void
