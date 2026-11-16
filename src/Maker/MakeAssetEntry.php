@@ -56,6 +56,11 @@ final class MakeAssetEntry extends AbstractMaker
         $name = (string) $input->getArgument('name');
         $style = (bool) $input->getOption('style');
         $handle = (string) ($input->getOption('handle') ?: $this->defaultHandle($context, $name));
+
+        if (preg_match('/^[a-z0-9][a-z0-9_-]*$/D', $handle) !== 1) {
+            throw new \InvalidArgumentException('Asset handle may only contain lowercase letters, digits, "-" and "_".');
+        }
+
         $sourcePath = (string) ($input->getOption('path') ?: $this->defaultSourcePath($name, $style));
         $location = $this->assetLocation((string) $input->getOption('location'));
         $webpackUpdate = $this->webpackConfigurator->entry($context, $handle, $sourcePath, $style);
