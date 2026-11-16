@@ -90,6 +90,23 @@ final class MakerInputSafetyTest extends TestCase
         }
     }
 
+    public function testAssetEntryRejectsHandleThatBreaksOutOfTheSourceComment(): void
+    {
+        foreach (["evil\nalert(1)", 'evil */ body { } /*'] as $handle) {
+            try {
+                $this->make($this->assetEntryMaker(), [
+                    'package'     => 'site/plugin',
+                    'name'        => 'frontend',
+                    '--handle'    => $handle,
+                    '--no-loader' => true,
+                ]);
+                self::fail('Unsafe handle accepted.');
+            } catch (\InvalidArgumentException) {
+                self::assertDirectoryDoesNotExist($this->workspace . '/packages/plugin/Resources');
+            }
+        }
+    }
+
     /** @param array<string, mixed> $arguments */
     private function make(AbstractMaker $maker, array $arguments): void
     {
