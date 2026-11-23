@@ -18,6 +18,14 @@ final class WebpackEncoreEntryConfiguratorTest extends TestCase
         self::assertStringNotContainsString('Encore.isProduction ?', $contents);
     }
 
+    public function testEntryPathIsWrittenWithoutEscapedSlashes(): void
+    {
+        self::assertStringContainsString(
+            ".addEntry('site-frontend', './Resources/ts/frontend.ts')",
+            $this->defaultConfigWithEntry('./Resources/ts/frontend.ts'),
+        );
+    }
+
     private function defaultConfigWithEntry(string $sourcePath): string
     {
         $root = (string) realpath(sys_get_temp_dir());
