@@ -59,6 +59,12 @@ final class GeneratedSourceSafetyTest extends TestCase
             $context = new PackageContext($root, 'site/root', $root, 'Site');
             self::assertSame('Resources/ts/block/example.ts', $context->packageRelativePath('Resources/ts/block/example.ts'));
             self::assertSame('config/services.php', $context->relativePath($root . '/config/services.php'));
+            try {
+                $context->relativePath($root . '/link/webpack.config.js');
+                self::fail('Symlinked path outside the project accepted.');
+            } catch (\InvalidArgumentException) {
+                self::assertTrue(true);
+            }
             foreach (['../escape', '/tmp/escape', 'link/nonexistent', "invalid\0path", './packages/../../escape'] as $path) {
                 try {
                     ProjectPath::relative($root, $path);

@@ -51,7 +51,7 @@ final readonly class PackageContext
             return '';
         }
         if (str_starts_with($path, $projectDir . '/')) {
-            return substr($path, strlen($projectDir) + 1);
+            return ProjectPath::relative($this->projectDir, substr($path, strlen($projectDir) + 1));
         }
 
         return ProjectPath::relative($this->projectDir, $path);
