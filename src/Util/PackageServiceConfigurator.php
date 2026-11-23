@@ -214,7 +214,28 @@ YAML . "\n";
             return $contents;
         }
 
-        return rtrim($contents) . "\n\n    {$className}:\n" . implode("\n", $body) . "\n";
+        $definition = "\n\n    {$className}:\n" . implode("\n", $body) . "\n";
+        $matches = [];
+
+        if (preg_match('/^services:[ \t]*(?:#.*)?$/m', $contents, $matches, \PREG_OFFSET_CAPTURE) !== 1) {
+            if (preg_match('/^services:/m', $contents) === 1) {
+                throw new \RuntimeException(sprintf(
+                    'Cannot add "%s": the "services" key must be a block mapping. Register the service manually.',
+                    $className,
+                ));
+            }
+
+            return rtrim($contents) . "\n\nservices:" . $definition;
+        }
+
+        // The services block ends at the next top-level key (e.g. "when@dev:" or "parameters:").
+        $start = $matches[0][1] + strlen($matches[0][0]);
+        $end = preg_match('/^[^\s#]/m', $contents, $matches, \PREG_OFFSET_CAPTURE, $start) === 1
+            ? $matches[0][1]
+            : strlen($contents);
+        $rest = substr($contents, $end);
+
+        return rtrim(substr($contents, 0, $end)) . $definition . ($rest === '' ? '' : "\n" . $rest);
     }
 
     /** @param list<string> $body */
