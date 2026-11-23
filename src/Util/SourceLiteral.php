@@ -8,7 +8,7 @@ final class SourceLiteral
 {
     public static function javascript(string $value): string
     {
-        $encoded = json_encode($value, JSON_THROW_ON_ERROR | JSON_HEX_TAG | JSON_UNESCAPED_UNICODE);
+        $encoded = json_encode($value, JSON_THROW_ON_ERROR | JSON_HEX_TAG | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         return "'" . str_replace(["'", '\\"'], ["\\'", '"'], substr($encoded, 1, -1)) . "'";
     }
 
