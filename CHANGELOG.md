@@ -6,9 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 where applicable.
 
-## Unreleased
+## 1.0.5 — 2026-11-23
 
-- Initial Maker Bundle package implementation, documentation, and QA workflow.
+- `make:sympress-package` keeps empty objects (`"require-dev": {}`, `"extra": {}`, `"allow-plugins": {}`) when it adds the package to the root `composer.json`; they were rewritten as `[]` and Composer rejected the file.
+- YAML service definitions are now added inside the `services:` block instead of at the end of the file, where a following `when@dev:` or `parameters:` key swallowed them.
+- `make:asset-entry --path` strips only a leading `./`; paths such as `./.config/x.ts` no longer land elsewhere and a leading `..` is rejected.
+- The default `webpack.config.js` calls `Encore.isProduction()` so output cleanup works again outside production.
+- Generated `block.json` writes `"attributes": {}` and generated JavaScript literals no longer escape `/`.
+- Service file and `webpack.config.js` updates apply the same symlink/traversal checks as other generated files.
+- CI: let Dependabot update GitHub Actions pins.
 
 ## 1.0.4 — 2026-11-16
 
