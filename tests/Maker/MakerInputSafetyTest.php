@@ -9,6 +9,7 @@ use SymPress\MakerBundle\Composer\PackageAutoloadResolver;
 use SymPress\MakerBundle\Maker\MakeAssetEntry;
 use SymPress\MakerBundle\Maker\MakeBlock;
 use SymPress\MakerBundle\Maker\MakeDataProvider;
+use SymPress\MakerBundle\Maker\MakeSympressPackage;
 use SymPress\MakerBundle\Tests\Fixtures\ArrayComposerPackageLocator;
 use SymPress\MakerBundle\Util\JsonFile;
 use SymPress\MakerBundle\Util\PackageAwareAutoloaderUtil;
@@ -138,6 +139,27 @@ final class MakerInputSafetyTest extends TestCase
         $this->make($maker, $arguments);
         self::assertFileExists($blockJson);
         self::assertFileExists($this->workspace . '/packages/plugin/Resources/views/block/hero.php');
+    }
+
+    public function testSympressPackageKeepsEmptyObjectsInRootComposerJson(): void
+    {
+        file_put_contents(
+            $this->workspace . '/composer.json',
+            '{"name": "site/root", "require": {"php": "^8.5"}, "require-dev": {}, "extra": {},'
+            . ' "config": {"allow-plugins": {}}, "repositories": []}',
+        );
+
+        $this->make(new MakeSympressPackage($this->workspace, new JsonFile()), ['name' => 'site/events']);
+
+        $root = (string) file_get_contents($this->workspace . '/composer.json');
+        self::assertStringContainsString('"require-dev": {}', $root);
+        self::assertStringContainsString('"extra": {}', $root);
+        self::assertStringContainsString('"allow-plugins": {}', $root);
+        self::assertStringContainsString('"repositories": []', $root);
+        self::assertSame(
+            ['php' => '^8.5', 'site/events' => '*'],
+            json_decode($root, true, flags: \JSON_THROW_ON_ERROR)['require'],
+        );
     }
 
     /** @param array<string, mixed> $arguments */

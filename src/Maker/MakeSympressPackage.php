@@ -259,17 +259,13 @@ final class MakeSympressPackage extends AbstractMaker
     private function rootComposerWithPackage(string $packageName, bool $dev): string
     {
         $rootComposer = sprintf('%s/composer.json', rtrim($this->projectDir, '/'));
-        $data = $this->jsonFile->read($rootComposer);
+        $data = $this->jsonFile->readObject($rootComposer);
         $section = $dev ? 'require-dev' : 'require';
-        $require = $data[$section] ?? [];
-
-        if (!is_array($require)) {
-            $require = [];
-        }
-
+        $require = $data->{$section} ?? null;
+        $require = $require instanceof \stdClass ? (array) $require : [];
         $require[$packageName] = '*';
         ksort($require);
-        $data[$section] = $require;
+        $data->{$section} = (object) $require;
 
         return $this->jsonFile->encode($data);
     }
