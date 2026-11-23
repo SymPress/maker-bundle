@@ -28,8 +28,28 @@ final class JsonFile
         return $data;
     }
 
-    /** @param array<string, mixed> $data */
-    public function encode(array $data): string
+    /**
+     * Decodes into stdClass so empty objects ({}) survive a rewrite instead of becoming [].
+     */
+    public function readObject(string $file): \stdClass
+    {
+        $contents = is_file($file) ? file_get_contents($file) : '';
+
+        if (!is_string($contents) || trim($contents) === '') {
+            return new \stdClass();
+        }
+
+        $data = json_decode($contents, false, flags: \JSON_THROW_ON_ERROR);
+
+        if (!$data instanceof \stdClass) {
+            throw new \RuntimeException(sprintf('JSON file "%s" must contain an object.', $file));
+        }
+
+        return $data;
+    }
+
+    /** @param array<string, mixed>|\stdClass $data */
+    public function encode(array|\stdClass $data): string
     {
         return json_encode(
             $data,
