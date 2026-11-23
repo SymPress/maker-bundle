@@ -131,7 +131,7 @@ final class MakeAssetEntry extends AbstractMaker
 
     private function sourceFile(PackageContext $context, string $sourcePath): string
     {
-        return $context->packageRelativePath(ltrim($sourcePath, './'));
+        return $context->packageRelativePath((string) preg_replace('#^\./#', '', $sourcePath));
     }
 
     private function assetLocation(string $location): string

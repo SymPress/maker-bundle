@@ -93,6 +93,26 @@ final class MakerInputSafetyTest extends TestCase
         }
     }
 
+    public function testAssetEntryStripsOnlyALeadingDotSlashFromThePath(): void
+    {
+        $this->make($this->assetEntryMaker(), [
+            'package'     => 'site/plugin',
+            'name'        => 'frontend',
+            '--path'      => './.config/entry.ts',
+            '--no-loader' => true,
+        ]);
+        self::assertFileExists($this->workspace . '/packages/plugin/.config/entry.ts');
+        self::assertDirectoryDoesNotExist($this->workspace . '/packages/plugin/config');
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->make($this->assetEntryMaker(), [
+            'package'     => 'site/plugin',
+            'name'        => 'outside',
+            '--path'      => '../outside/entry.ts',
+            '--no-loader' => true,
+        ]);
+    }
+
     public function testAssetEntryRejectsHandleThatBreaksOutOfTheSourceComment(): void
     {
         foreach (["evil\nalert(1)", 'evil */ body { } /*'] as $handle) {
