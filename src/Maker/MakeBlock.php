@@ -201,7 +201,7 @@ final class MakeBlock extends AbstractMaker
             'supports'     => [
                 'html' => false,
             ],
-            'attributes'   => [],
+            'attributes'   => new \stdClass(),
         ];
 
         if ($frontendHandle !== null) {

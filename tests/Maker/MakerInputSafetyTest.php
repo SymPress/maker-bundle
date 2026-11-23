@@ -158,6 +158,7 @@ final class MakerInputSafetyTest extends TestCase
         unlink($blockJson);
         $this->make($maker, $arguments);
         self::assertFileExists($blockJson);
+        self::assertStringContainsString('"attributes": {}', (string) file_get_contents($blockJson));
         self::assertFileExists($this->workspace . '/packages/plugin/Resources/views/block/hero.php');
     }
 
