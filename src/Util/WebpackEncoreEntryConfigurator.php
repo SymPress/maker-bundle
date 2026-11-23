@@ -83,7 +83,7 @@ Encore
     .addPlugin(new DependencyExtractionWebpackPlugin({
         outputFormat: 'json',
     }))
-    .cleanupOutputBeforeBuild(!Encore.isProduction ? ['*.js', '*.css'] : [])
+    .cleanupOutputBeforeBuild(!Encore.isProduction() ? ['*.js', '*.css'] : [])
     .disableSingleRuntimeChunk();
 
 module.exports = Encore.getWebpackConfig();
